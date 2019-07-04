@@ -23,12 +23,12 @@
 
 DefinitionManager::DefinitionManager(QWidget *parent) :
     QWidget(parent),
-    isUpdating(false),
-    dimensionManager(DimensionIdentifier::Instance()),
-    blockManager(BlockIdentifier::Instance()),
     biomeManager(BiomeIdentifier::Instance()),
+    blockManager(BlockIdentifier::Instance()),
+    dimensionManager(DimensionIdentifier::Instance()),
     entityManager(EntityIdentifier::Instance()),
-    flatteningConverter(FlatteningConverter::Instance())
+    flatteningConverter(FlatteningConverter::Instance()),
+    isUpdating(false)
 {
   setWindowFlags(Qt::Window);
   setWindowTitle(tr("Definitions"));
@@ -152,8 +152,8 @@ void DefinitionManager::refresh() {
 
 void DefinitionManager::selectedPack(QTableWidgetItem *item,
                                      QTableWidgetItem *) {
-  emit packSelected(item != NULL);
-  if (item != NULL)
+  emit packSelected(item != nullptr);
+  if (item != nullptr)
     selected = item->data(Qt::UserRole).toString();
   else
     selected = QString();
@@ -200,6 +200,8 @@ void DefinitionManager::toggledPack(bool onoff) {
           dimensionManager.disableDefinitions(def.dimensionid);
           entityManager.disableDefinitions(def.entityid);
         }
+        break;
+      case Definition::Converter:
         break;
     }
   }
@@ -514,6 +516,8 @@ void DefinitionManager::removeDefinition(QString path) {
         dimensionManager.disableDefinitions(def.dimensionid);
         entityManager.disableDefinitions(def.entityid);
         break;
+    case Definition::Converter:
+      break;
     }
     definitions.remove(path);
     QFile::remove(path);
@@ -542,8 +546,8 @@ void DefinitionManager::autoUpdate() {
     if (!def.update.isEmpty()) {
       isUpdating = true;
       auto updater = new DefinitionUpdater(name, def.update, def.version);
-      connect(updater, SIGNAL(updated   (DefinitionUpdater *, QString, QString)),
-              this,    SLOT  (updatePack(DefinitionUpdater *, QString, QString)));
+      connect(updater, SIGNAL(updated   (DefinitionUpdater *)),
+              this,    SLOT  (updatePack(DefinitionUpdater *)));
       updateQueue.append(updater);
       updater->update();
     }
@@ -553,9 +557,7 @@ void DefinitionManager::autoUpdate() {
   settings.remove("packupdates");  // remove now unused entries from registry
 }
 
-void DefinitionManager::updatePack(DefinitionUpdater *updater,
-                                   QString filename,
-                                   QString version) {
+void DefinitionManager::updatePack(DefinitionUpdater *updater) {
   updateQueue.removeOne(updater);
   delete updater;
 

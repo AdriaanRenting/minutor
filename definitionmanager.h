@@ -57,9 +57,7 @@ class DefinitionManager : public QWidget {
   void removePack();
   void exportPack();
   void checkForUpdates();
-  void updatePack(DefinitionUpdater *updater,
-                  QString filename,
-                  QString version);
+  void updatePack(DefinitionUpdater *updater);
 
  private:
   QTableWidget *table;

@@ -74,14 +74,14 @@ void Properties::DisplayProperties(QVariant p) {
 
   // only support QVariantMap or QVariantHash at this level
   switch (p.type()) {
-    case QMetaType::QVariantMap:
-      ParseIterable(NULL, p.toMap());
+    case QVariant::Map:
+      ParseIterable(nullptr, p.toMap());
       break;
-    case QMetaType::QVariantHash:
-      ParseIterable(NULL, p.toHash());
+    case QVariant::Hash:
+      ParseIterable(nullptr, p.toHash());
       break;
-    case QMetaType::QVariantList:
-      ParseList(NULL, p.toList());
+    case QVariant::List:
+      ParseList(nullptr, p.toList());
       break;
     default:
       qWarning("Trying to display scalar value as a property");
@@ -103,13 +103,13 @@ void Properties::DisplayProperties(QVariant p) {
 
 void Properties::CreateTree(QTreeWidgetItem* node, const QVariant& v) {
   switch (v.type()) {
-    case QMetaType::QVariantMap:
+    case QVariant::Map:
       ParseIterable(node, v.toMap());
       break;
-    case QMetaType::QVariantHash:
+    case QVariant::Hash:
       ParseIterable(node, v.toHash());
       break;
-    case QMetaType::QVariantList:
+    case QVariant::List:
       ParseList(node, v.toList());
       break;
     default:
